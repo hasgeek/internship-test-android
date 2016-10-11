@@ -3,6 +3,8 @@ package com.karthikb351.mobiledevinternshiptest.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Author: @karthikb351
  * Project: mobile-dev-internship-test
@@ -147,13 +149,13 @@ public class Repository {
     private String deploymentsUrl;
     @SerializedName("created_at")
     @Expose
-    private String createdAt;
+    private Date createdAt;
     @SerializedName("updated_at")
     @Expose
-    private String updatedAt;
+    private Date updatedAt;
     @SerializedName("pushed_at")
     @Expose
-    private String pushedAt;
+    private Date pushedAt;
     @SerializedName("git_url")
     @Expose
     private String gitUrl;
@@ -851,42 +853,42 @@ public class Repository {
     /**
      * @return The createdAt
      */
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
     /**
      * @param createdAt The created_at
      */
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
     /**
      * @return The updatedAt
      */
-    public String getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
     /**
      * @param updatedAt The updated_at
      */
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     /**
      * @return The pushedAt
      */
-    public String getPushedAt() {
+    public Date getPushedAt() {
         return pushedAt;
     }
 
     /**
      * @param pushedAt The pushed_at
      */
-    public void setPushedAt(String pushedAt) {
+    public void setPushedAt(Date pushedAt) {
         this.pushedAt = pushedAt;
     }
 
