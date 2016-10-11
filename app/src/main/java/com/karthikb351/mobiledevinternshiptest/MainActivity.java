@@ -1,9 +1,11 @@
 package com.karthikb351.mobiledevinternshiptest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Observer<List<Repository>>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.d("makeApiCall","completed");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e("makeApiCall", e.getMessage());
                     }
 
                     @Override
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             return data.size();
         }
 
-        public class GitHubViewHolder extends RecyclerView.ViewHolder {
+        public class GitHubViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             TextView fullName;
             TextView description;
 
@@ -106,7 +108,21 @@ public class MainActivity extends AppCompatActivity {
 //                throw new RuntimeException("Follow the ViewHolder pattern and create a ViewHolder from the list_item.xml view");
                 fullName = (TextView) view.findViewById(R.id.tv_full_name); //Ref to views
                 description=(TextView) view.findViewById(R.id.tv_description);
+                view.setOnClickListener(this);
 
+            }
+
+            @Override
+            public void onClick(View v) {
+                int position=getAdapterPosition();
+                Intent intent=new Intent(MainActivity.this, RepositoryActivity.class);
+                intent.putExtra("full_name",data.get(position).getFullName());
+                intent.putExtra("description",data.get(position).getDescription());
+                intent.putExtra("createdAt",data.get(position).getCreatedAt());
+                intent.putExtra("forksCount",data.get(position).getForksCount());
+                intent.putExtra("gitUrl",data.get(position).getGitUrl());
+                intent.putExtra("name",data.get(position).getName());
+                startActivity(intent);
             }
         }
     }
