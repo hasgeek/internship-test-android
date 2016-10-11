@@ -2,27 +2,30 @@ package com.karthikb351.mobiledevinternshiptest;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.karthikb351.mobiledevinternshiptest.model.Repository;
-import com.karthikb351.mobiledevinternshiptest.network.APIService;
-
+import com.karthikb351.mobiledevinternshiptest.network.APITask;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+/*
+
+
+Created an Asyn Task APITask instead of APIService.
+Used Callback insted RxJava
+
+Added card view for better UI
+ */
+
+
 
 public class MainActivity extends AppCompatActivity {
 
-
+    ArrayList<Repository> repos;
     RecyclerView recyclerView;
 
     @Override
@@ -30,7 +33,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        repos = new ArrayList<>();
+
+
         initViews();
+
+
+        //Make sure internet is connected before making this call. Or else check by adding check_network_state permssion in manifest.
         makeApiCall();
     }
 
@@ -39,12 +49,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addReposToAdapter(List<Repository> repos) {
+
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
         recyclerView.setAdapter(new GitHubRecyclerViewAdapter(repos));
     }
 
     private void makeApiCall() {
-        throw new RuntimeException("You need to call the API using the APIService class, subscribe to the Observable you get back, and add the result to the recyclerview adapter via addReposToAdapter()");
+
+
+
+        new APITask() {
+            @Override
+            protected void onPostExecute(ArrayList<Repository> repositories) {
+                super.onPostExecute(repositories);
+                repos = repositories;
+                addReposToAdapter(repos);
+            }
+        }.execute("hasgeek"); //Name of the organisation.
+
     }
 
     class GitHubRecyclerViewAdapter extends RecyclerView.Adapter<GitHubRecyclerViewAdapter.GitHubViewHolder> {
@@ -58,12 +81,28 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public GitHubViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            throw new RuntimeException("Create and return a GitHubViewHolder object based on the list_item.xml file");
+
+            View rootView = getLayoutInflater().inflate(R.layout.list_item, parent, false);
+
+            GitHubViewHolder retVal = new GitHubViewHolder(rootView);
+
+            retVal.name = (TextView) rootView.findViewById(R.id.tv_Name);
+            retVal.description = (TextView) rootView.findViewById(R.id.tv_Description);
+            retVal.createdAt = (TextView) rootView.findViewById(R.id.tv_CreatedAt);
+
+            return retVal;
+
         }
 
         @Override
         public void onBindViewHolder(GitHubViewHolder holder, int position) {
-            throw new RuntimeException("You should bind the 'full_name' of the repository at this position to the viewholder's textview");
+
+            Repository repository = data.get(position);
+
+            holder.name.setText(String.valueOf(repository.getFull_name()));
+            holder.description.setText(String.valueOf(repository.getDescription()));
+            holder.createdAt.setText(String.valueOf(repository.getCreated_at()));
+
         }
 
         @Override
@@ -73,9 +112,14 @@ public class MainActivity extends AppCompatActivity {
 
         public class GitHubViewHolder extends RecyclerView.ViewHolder {
 
+
+            TextView name;
+            TextView description;
+            TextView createdAt;
+
             public GitHubViewHolder(View view) {
                 super(view);
-                throw new RuntimeException("Follow the ViewHolder pattern and create a ViewHolder from the list_item.xml view");
+
             }
         }
     }

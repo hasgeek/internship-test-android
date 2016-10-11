@@ -2,11 +2,13 @@ package com.karthikb351.mobiledevinternshiptest.network;
 
 import com.karthikb351.mobiledevinternshiptest.model.Repository;
 
-import java.util.List;
+import java.util.ArrayList;
 
+
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import rx.Observable;
+
 
 /**
  * Author: @karthikb351
@@ -16,6 +18,7 @@ import rx.Observable;
 public interface GitHubApiInterface {
 
     @GET("orgs/{org}/repos")
-    Observable<List<Repository>> getReposByOrg(@Path("org") String org);
+    Call<ArrayList<Repository>> getReposByOrg(@Path("org") String org);  //Changing Observable to Call
+
 
 }
