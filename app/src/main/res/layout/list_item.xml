@@ -4,13 +4,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:ignore="HardcodedText" >
+    tools:ignore="HardcodedText">
 
     <TextView
         android:id="@+id/tv_repo_name"
-        android:contentDescription="Repository Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:contentDescription="Repository Name"
         android:textAppearance="?attr/textAppearanceListItem" />
 </LinearLayout>

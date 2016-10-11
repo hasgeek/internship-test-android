@@ -17,5 +17,5 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        tools:listitem="@layout/list_item"/>
+        tools:listitem="@layout/list_item" />
 </RelativeLayout>

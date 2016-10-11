@@ -2,9 +2,6 @@ package com.karthikb351.mobiledevinternshiptest.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.karthikb351.mobiledevinternshiptest.model.Repository;
-
-import java.util.Observable;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

@@ -1,8 +1,7 @@
 package com.karthikb351.mobiledevinternshiptest;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Subscriber<List<Repository>>() {
                     @Override
                     public final void onCompleted() {
-                        Log.d("makeApiCall","completed");
+                        Log.d("makeApiCall", "completed");
                     }
 
                     @Override
