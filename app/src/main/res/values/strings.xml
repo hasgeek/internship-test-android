@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Mobile Developer Internship Test</string>
+    <string name="app_name">HasGeek Library</string>
+    <string name="ErrorCheck">MakeApiCall</string>
+    <string name="noConnection">No Internet Connection</string>
+    <string name="AccessDenied">Access Denied</string>
+    <string name="organisation">hasgeek</string>
+    <string name="network_toast">Uh-oh! This app requires an internet connection.</string>
 </resources>
