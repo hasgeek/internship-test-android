@@ -5,14 +5,17 @@ android:
     - android-22
     - extra
     - extra-android-support
-    - sys-img-armeabi-v7a-android-22
+    - sys-img-armeabi-v7a-android-21
 
 jdk:
   - oraclejdk8
+env:
+  matrix:
+    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
 
 # Emulator Management: Create, Start and Wait
 before_script:
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - ./wait_for_emulator
   - adb shell input keyevent 82 &
