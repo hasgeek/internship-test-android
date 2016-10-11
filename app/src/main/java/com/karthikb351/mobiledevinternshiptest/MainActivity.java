@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.karthikb351.mobiledevinternshiptest.network.APIService;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -44,7 +46,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeApiCall() {
-        throw new RuntimeException("You need to call the API using the APIService class, subscribe to the Observable you get back, and add the result to the recyclerview adapter via addReposToAdapter()");
+        APIService.getInstance().getService().getReposByOrg("sdsmdg")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Repository>>() {
+                    @Override
+                    public final void onCompleted() {
+                        Log.d("makeApiCall","completed");
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.e("makeApiCall", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(List<Repository> response) {
+                        addReposToAdapter(response);
+                    }
+                });
     }
 
     class GitHubRecyclerViewAdapter extends RecyclerView.Adapter<GitHubRecyclerViewAdapter.GitHubViewHolder> {
@@ -58,12 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public GitHubViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            throw new RuntimeException("Create and return a GitHubViewHolder object based on the list_item.xml file");
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+            return new GitHubViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(GitHubViewHolder holder, int position) {
-            throw new RuntimeException("You should bind the 'full_name' of the repository at this position to the viewholder's textview");
+            holder.tvRepoName.setText(data.get(position).getFullName());
         }
 
         @Override
@@ -73,9 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
         public class GitHubViewHolder extends RecyclerView.ViewHolder {
 
+            TextView tvRepoName;
+
             public GitHubViewHolder(View view) {
                 super(view);
-                throw new RuntimeException("Follow the ViewHolder pattern and create a ViewHolder from the list_item.xml view");
+                tvRepoName = (TextView) view.findViewById(R.id.tv_repo_name);
             }
         }
     }
