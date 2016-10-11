@@ -12,7 +12,7 @@ jdk:
 
 # Emulator Management: Create, Start and Wait
 before_script:
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a --skin WXGA720
   - emulator -avd test -no-audio -no-window &
   - ./wait_for_emulator
   - adb shell input keyevent 82 &
