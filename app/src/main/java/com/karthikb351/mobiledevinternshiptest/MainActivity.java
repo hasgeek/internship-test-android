@@ -18,14 +18,15 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-
     RecyclerView recyclerView;
     Observable<List<Repository>> listObservable;
+    Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +47,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Unsubscribe from the observable when the activity is about to be destroyed.
+     * This is mainly done to prevent memory leaks.
+     */
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+    }
+
+    /**
      * Make the API Call and get an Observable which contains a list of Repository Names.
      * Also subscribed to this observable and added the List of Repo Names to the Adapter.
      * I also Added Logging statements to onCompleted() and onError() methods for easier debugging.
      */
 
     private void makeApiCall() {
-        APIService apiService = new APIService();
-        listObservable = apiService.getService().getReposByOrg("hasgeek");
-        listObservable.subscribeOn(Schedulers.newThread())
+        listObservable = APIService.getService().getReposByOrg("hasgeek");
+        /**
+         * Use the dedicated io thread instead of creating a new one
+         */
+        listObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Repository>>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(getClass().getSimpleName(),"Completed");
+                        Log.v(getClass().getSimpleName(), "Completed");
                     }
 
                     @Override
