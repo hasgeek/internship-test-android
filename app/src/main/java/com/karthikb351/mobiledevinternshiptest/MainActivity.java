@@ -45,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new GitHubRecyclerViewAdapter(repos));
     }
 
+    /**
+     * Make the API Call and get an Observable which contains a list of Repository Names.
+     * Also subscribed to this observable and added the List of Repo Names to the Adapter.
+     * I also Added Logging statements to onCompleted() and onError() methods for easier debugging.
+     */
+
     private void makeApiCall() {
-//        throw new RuntimeException("You need to call the API using the APIService class, subscribe to the Observable you get back, and add the result to the recyclerview adapter via addReposToAdapter()");
         APIService apiService = new APIService();
         listObservable = apiService.getService().getReposByOrg("hasgeek");
         listObservable.subscribeOn(Schedulers.newThread())
@@ -54,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Observer<List<Repository>>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.e(getClass().getSimpleName(),"Completed");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("ObserverError", "No Data received");
+                        Log.e("Error", e.getMessage());
                     }
 
                     @Override
@@ -84,9 +89,14 @@ public class MainActivity extends AppCompatActivity {
             return new GitHubViewHolder(view);
         }
 
+        /**
+         * Received the full name of the repository for a particular position from the list of Repositories
+         * and set it to the TextView which is initialized in the ViewHolder
+         */
+
         @Override
         public void onBindViewHolder(GitHubViewHolder holder, int position) {
-            holder.full_name.setText(data.get(position).getFullName());
+            holder.fullName.setText(data.get(position).getFullName());
         }
 
         @Override
@@ -94,12 +104,16 @@ public class MainActivity extends AppCompatActivity {
             return data.size();
         }
 
+        /**
+         * Initialized the TextView in list_item.xml which will display the full name of the repository.
+         */
+
         class GitHubViewHolder extends RecyclerView.ViewHolder {
-            TextView full_name;
+            TextView fullName;
 
             GitHubViewHolder(View view) {
                 super(view);
-                full_name = (TextView) view.findViewById(R.id.id);
+                fullName = (TextView) view.findViewById(R.id.id);
             }
         }
     }

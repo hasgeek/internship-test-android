@@ -13,6 +13,12 @@ public class APIService {
 
     private GitHubApiInterface service;
 
+    /**
+     * Create a new instance of Retrofit object and added RXJavaAdapterFactory which uses RxJava for creating observables.
+     * Added the base URL for making API calls to github.
+     * Added GSON as the default parser for the response received from the API call so that we won't have to go through the hassle
+     * of parsing the response manually.
+     */
     public APIService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -20,7 +26,6 @@ public class APIService {
                 .baseUrl("https://api.github.com/")
                 .build();
         service = retrofit.create(GitHubApiInterface.class);
-//        throw new RuntimeException("Build a Retrofit adapter from the GitHubApiInterface with RxJava Observable support as well a GSON parser");
     }
 
     public GitHubApiInterface getService() {

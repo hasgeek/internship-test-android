@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class Repository {
 
     /**
+     * Model for the Response received from the API call.
      * I have not included all the fields from the response as we were displaying only the full_name for the repo.
      */
 
