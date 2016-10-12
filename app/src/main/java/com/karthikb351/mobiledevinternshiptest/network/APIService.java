@@ -11,10 +11,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIService {
 
-    GitHubApiInterface service;
+    private GitHubApiInterface service;
 
     public APIService() {
-        throw new RuntimeException("Build a Retrofit adapter from the GitHubApiInterface with RxJava Observable support as well a GSON parser");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(GitHubApiInterface.class);
     }
 
     public GitHubApiInterface getService() {
