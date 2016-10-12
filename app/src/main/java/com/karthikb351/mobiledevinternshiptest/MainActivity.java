@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
                 this.view = view;
                 tvRepoName = (TextView) view.findViewById(R.id.id);
-                tvRepoStars = (TextView) view.findViewById(R.id.textView2);
+                tvRepoStars = (TextView) view.findViewById(R.id.stars);
             }
         }
     }
