@@ -15,6 +15,8 @@ import rx.Observable;
 
 public interface GitHubApiInterface {
 
+    String SERVICE_ENDPOINT = "https://api.github.com";
+
     @GET("orgs/{org}/repos")
     Observable<List<Repository>> getReposByOrg(@Path("org") String org);
 
