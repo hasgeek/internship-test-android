@@ -9,7 +9,9 @@ android:
 
 jdk:
   - oraclejdk8
-
+env:
+ matrix:
+   - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
 # Emulator Management: Create, Start and Wait
 before_script:
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
