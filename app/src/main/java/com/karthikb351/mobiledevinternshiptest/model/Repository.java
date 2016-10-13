@@ -9,29 +9,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class Repository {
 
-
-    //Creating a POJO with 3 fields. Variable names same as JSon keys.
+    //Creating a POJO with full_name field. Key is same as JSon Key.
 
     String full_name;
-    String description;
-    String created_at;
 
-    public Repository(String full_name, String description, String created_at) {
+    public Repository(String full_name) {
         this.full_name = full_name;
-        this.description = description;
-        this.created_at = created_at;
     }
 
     public String getFull_name() {
         return full_name;
     }
 
-    public String getDescription() {
-        return description;
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
     }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
 }
