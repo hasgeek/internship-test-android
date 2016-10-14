@@ -1,14 +1,20 @@
 package com.karthikb351.mobiledevinternshiptest;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.WindowManager;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.content.Context.KEYGUARD_SERVICE;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -28,6 +34,19 @@ public class ExampleInstrumentedTest {
     public ActivityTestRule<MainActivity> mActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
+    @Before
+    public void unlockScreen() {
+        final MainActivity activity = mActivityRule.getActivity();
+        Runnable wakeUpDevice = new Runnable() {
+            public void run() {
+                activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        };
+        activity.runOnUiThread(wakeUpDevice);
+    }
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -36,6 +55,5 @@ public class ExampleInstrumentedTest {
         assertEquals("com.karthikb351.mobiledevinternshiptest", appContext.getPackageName());
 
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
-
     }
 }
