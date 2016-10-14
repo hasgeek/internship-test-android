@@ -43,7 +43,7 @@ class GitHubRecyclerViewAdapter extends RecyclerView.Adapter<GitHubRecyclerViewA
 
         /*setting values */
 
-        holder.getmTextView().setText(data.get(position).getName());
+        holder.getmTextView().setText(data.get(position).getFull_name());
         holder.getmStars().setText(data.get(position).getStargazers_count());
         holder.getmIssues().setText(data.get(position).getOpen_issues_count());
 
