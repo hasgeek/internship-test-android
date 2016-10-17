@@ -11,13 +11,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIService {
 
-    GitHubApiInterface service;
+    /**
+     * Made APIService singleton so that only one instance of service is available at all times.
+     */
 
-    public APIService() {
-        throw new RuntimeException("Build a Retrofit adapter from the GitHubApiInterface with RxJava Observable support as well a GSON parser");
+    private static GitHubApiInterface service;
+
+    /**
+     * Create a new instance of Retrofit object and added RXJavaAdapterFactory which uses RxJava for creating observables.
+     * Added the base URL for making API calls to github.
+     * Added GSON as the default parser for the response received from the API call so that we won't have to go through the hassle
+     * of parsing the response manually.
+     */
+    private APIService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("https://api.github.com/")
+                .build();
+        service = retrofit.create(GitHubApiInterface.class);
     }
 
-    public GitHubApiInterface getService() {
+    public static GitHubApiInterface getService() {
+        if (service == null) {
+            new APIService();
+        }
         return service;
     }
 }

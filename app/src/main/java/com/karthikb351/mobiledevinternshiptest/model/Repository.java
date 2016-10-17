@@ -9,7 +9,20 @@ import com.google.gson.annotations.SerializedName;
 
 public class Repository {
 
-    public Repository() {
-        throw new RuntimeException("You need to fill out the fields in this class so GSON and Retrofit can bind to them");
+    /**
+     * Model for the Response received from the API call.
+     * I have not included all the fields from the response as we were displaying only the full_name for the repo.
+     */
+
+    @SerializedName("full_name")
+    private String fullName;
+
+    public String getFullName() {
+        return fullName;
     }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
 }

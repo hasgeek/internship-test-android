@@ -1,10 +1,10 @@
 package com.karthikb351.mobiledevinternshiptest;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +16,17 @@ import com.karthikb351.mobiledevinternshiptest.network.APIService;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-
     RecyclerView recyclerView;
+    Observable<List<Repository>> listObservable;
+    Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +46,72 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new GitHubRecyclerViewAdapter(repos));
     }
 
+    /**
+     * Unsubscribe from the observable when the activity is about to be destroyed.
+     * This is mainly done to prevent memory leaks.
+     */
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+    }
+
+    /**
+     * Make the API Call and get an Observable which contains a list of Repository Names.
+     * Also subscribed to this observable and added the List of Repo Names to the Adapter.
+     * I also Added Logging statements to onCompleted() and onError() methods for easier debugging.
+     */
+
     private void makeApiCall() {
-        throw new RuntimeException("You need to call the API using the APIService class, subscribe to the Observable you get back, and add the result to the recyclerview adapter via addReposToAdapter()");
+        listObservable = APIService.getService().getReposByOrg("hasgeek");
+        /**
+         * Use the dedicated io thread instead of creating a new one
+         */
+        listObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Repository>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.v(getClass().getSimpleName(), "Completed");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("Error", e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<Repository> repositories) {
+                        addReposToAdapter(repositories);
+                    }
+                });
     }
 
     class GitHubRecyclerViewAdapter extends RecyclerView.Adapter<GitHubRecyclerViewAdapter.GitHubViewHolder> {
 
         List<Repository> data = new ArrayList<>();
 
-        public GitHubRecyclerViewAdapter(List<Repository> repos) {
+        GitHubRecyclerViewAdapter(List<Repository> repos) {
             this.data = repos;
         }
 
 
         @Override
         public GitHubViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            throw new RuntimeException("Create and return a GitHubViewHolder object based on the list_item.xml file");
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+            return new GitHubViewHolder(view);
         }
+
+        /**
+         * Received the full name of the repository for a particular position from the list of Repositories
+         * and set it to the TextView which is initialized in the ViewHolder
+         */
 
         @Override
         public void onBindViewHolder(GitHubViewHolder holder, int position) {
-            throw new RuntimeException("You should bind the 'full_name' of the repository at this position to the viewholder's textview");
+            holder.fullName.setText(data.get(position).getFullName());
         }
 
         @Override
@@ -71,11 +119,16 @@ public class MainActivity extends AppCompatActivity {
             return data.size();
         }
 
-        public class GitHubViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * Initialized the TextView in list_item.xml which will display the full name of the repository.
+         */
 
-            public GitHubViewHolder(View view) {
+        class GitHubViewHolder extends RecyclerView.ViewHolder {
+            TextView fullName;
+
+            GitHubViewHolder(View view) {
                 super(view);
-                throw new RuntimeException("Follow the ViewHolder pattern and create a ViewHolder from the list_item.xml view");
+                fullName = (TextView) view.findViewById(R.id.id);
             }
         }
     }
