@@ -12,16 +12,17 @@ import android.widget.TextView;
 
 import com.karthikb351.mobiledevinternshiptest.model.Repository;
 import com.karthikb351.mobiledevinternshiptest.network.APIService;
+import com.karthikb351.mobiledevinternshiptest.network.GitHubApiInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
-
 
     RecyclerView recyclerView;
 
@@ -44,7 +45,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeApiCall() {
-        throw new RuntimeException("You need to call the API using the APIService class, subscribe to the Observable you get back, and add the result to the recyclerview adapter via addReposToAdapter()");
+        //throw new RuntimeException("You need to call the API using the APIService class, subscribe to the Observable you get back, and add the result to the recyclerview adapter via addReposToAdapter()");
+
+        APIService apiService = new APIService();
+        GitHubApiInterface gitHubApiInterface = apiService.getService();
+        gitHubApiInterface.getReposByOrg("hasGeek")
+                .subscribeOn(Schedulers.io()) //running network call on an I/O thread, we could use a new thread here as well
+                .observeOn(AndroidSchedulers.mainThread())// getting the response back on the Main Thread
+                .subscribe(new Subscriber<List<Repository>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Repository> repositories) {
+                        addReposToAdapter(repositories);
+                    }
+                });
     }
 
     class GitHubRecyclerViewAdapter extends RecyclerView.Adapter<GitHubRecyclerViewAdapter.GitHubViewHolder> {
@@ -55,15 +78,29 @@ public class MainActivity extends AppCompatActivity {
             this.data = repos;
         }
 
+        public class GitHubViewHolder extends RecyclerView.ViewHolder {
+
+            TextView textView;
+
+            public GitHubViewHolder(View view) {
+                super(view);
+                //throw new RuntimeException("Follow the ViewHolder pattern and create a ViewHolder from the list_item.xml view");
+                textView = (TextView) view.findViewById(R.id.id);
+            }
+        }
 
         @Override
         public GitHubViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            throw new RuntimeException("Create and return a GitHubViewHolder object based on the list_item.xml file");
+            //throw new RuntimeException("Create and return a GitHubViewHolder object based on the list_item.xml file");
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+            return (new GitHubViewHolder(view));
         }
 
         @Override
         public void onBindViewHolder(GitHubViewHolder holder, int position) {
-            throw new RuntimeException("You should bind the 'full_name' of the repository at this position to the viewholder's textview");
+            //throw new RuntimeException("You should bind the 'full_name' of the repository at this position to the viewholder's textview");
+            Repository repository = data.get(position);
+            holder.textView.setText(repository.getFullName());
         }
 
         @Override
@@ -71,12 +108,5 @@ public class MainActivity extends AppCompatActivity {
             return data.size();
         }
 
-        public class GitHubViewHolder extends RecyclerView.ViewHolder {
-
-            public GitHubViewHolder(View view) {
-                super(view);
-                throw new RuntimeException("Follow the ViewHolder pattern and create a ViewHolder from the list_item.xml view");
-            }
-        }
     }
 }
