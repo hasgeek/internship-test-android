@@ -16,6 +16,6 @@ import rx.Observable;
 public interface GitHubApiInterface {
 
     @GET("orgs/{org}/repos")
-    Observable<List<Repository>> getReposByOrg(@Path("org") String org);
+     Observable<List<Repository>> getReposByOrg(@Path("org") String org);
 
 }
