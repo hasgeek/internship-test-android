@@ -8,8 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Repository {
+    //Bind GSON to the Response in Retrofit
+//    @SerializedName("full_name")
+    private String full_name;
 
-    public Repository() {
-        throw new RuntimeException("You need to fill out the fields in this class so GSON and Retrofit can bind to them");
+    public String getFullName() {
+        return full_name;
     }
 }
